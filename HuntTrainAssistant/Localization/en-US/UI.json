@@ -26,6 +26,7 @@
     "AutoTeleportInactive": "Autoteleport: inactive",
     "AutoTeleportTo": "Autoteleport to {0}",
     "AutoTeleportActive": "Autoteleport active.",
+    "FlyToFlag": "Fly to flag (vnavmesh)",
     "TasksProcessing": "{0:D2} tasks processing",
     "TaskManagerInactive": "Task manager: inactive",
     "SonarAutoTeleport": "Sonar Auto-teleport",

@@ -26,6 +26,7 @@
     "AutoTeleportInactive": "자동 텔레포: 비활성",
     "AutoTeleportTo": "{0}(으)로 자동 텔레포",
     "AutoTeleportActive": "자동 텔레포 활성.",
+    "FlyToFlag": "플래그로 비행 (vnavmesh)",
     "TasksProcessing": "작업 {0:D2}개 처리 중",
     "TaskManagerInactive": "작업 관리자: 비활성",
     "SonarAutoTeleport": "Sonar 자동 텔레포",
