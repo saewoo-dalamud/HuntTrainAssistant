@@ -26,7 +26,7 @@ internal unsafe static class ChatMessageHandler
             var isConductorMessage = (P.Config.Debug && (cm.Sender.ToString().Contains(Svc.ClientState.LocalPlayer.Name.ToString()) || cm.LogKind == XivChatType.Echo)) || (TryDecodeSender(cm.Sender, out var s) && conductorNames.Contains(s.Name));
             if(isConductorMessage)
             {
-                P.LastConductorActivity = DateTime.UtcNow;
+                P.ConductorState.RecordActivity();
             }
             //InternalLog.Debug($"Message: {message.ToString()} from {sender}, isConductor = {isConductorMessage}");
             foreach (var x in cm.Message.Payloads)
@@ -82,7 +82,7 @@ internal unsafe static class ChatMessageHandler
                             }
                             if(P.Config.AutoFlyToConductorLocation)
                             {
-                                P.QueueAutoFlyLocation(m.TerritoryType.RowId, new(m.RawX / 1000f, m.RawY / 1000f));
+                                P.AutoFlight.Queue(m.TerritoryType.RowId, new(m.RawX / 1000f, m.RawY / 1000f));
                             }
                         }
                     }

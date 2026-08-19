@@ -1,9 +1,7 @@
 ﻿using Dalamud.Interface.Style;
-using ECommons.Automation;
 using ECommons.ExcelServices;
 using ECommons.ImGuiMethods;
 using ECommons.SimpleGui;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using HuntTrainAssistant.Tasks;
 using System.Runtime.Intrinsics.X86;
 
@@ -40,7 +38,7 @@ public unsafe class MainWindow : ConfigWindow
 						ImGui.SameLine();
 						if(ImGui.SmallButton(Loc.Get("Common.Clear")))
 						{
-								P.Config.Conductors.Clear();
+								P.ConductorState.Clear();
 						}
 						ImGui.SameLine();
 						// Remove selected conductor
@@ -84,10 +82,9 @@ public unsafe class MainWindow : ConfigWindow
 								}
 								ImGuiEx.Text($"{P.TeleportTo?.Aetheryte.GetPlaceName()}@{ExcelTerritoryHelper.GetName(P.TeleportTo?.Territory ?? 0)} i{P.TeleportTo?.Instance}");
 						}
-						if(CanFlyToFlag() && ImGui.Button(Loc.Get("MainWindow.FlyToFlag")))
+						if(P.AutoFlight.CanFlyToFlag() && ImGui.Button(Loc.Get("MainWindow.FlyToFlag")))
 						{
-								Chat.ExecuteCommand("/vnav flyflag");
-								PluginLog.Information("Requested vnavmesh fly-to-flag navigation");
+								P.AutoFlight.FlyToFlag();
 						}
 						if(P.TaskManager.IsBusy)
 						{
@@ -131,32 +128,6 @@ public unsafe class MainWindow : ConfigWindow
 				{
 						e.LogWarning();
 				}
-    }
-
-    private static bool CanFlyToFlag()
-    {
-        if(!Player.Interactable
-            || !IsScreenReady()
-            || Svc.Condition[ConditionFlag.InCombat]
-            || Svc.Condition[ConditionFlag.BetweenAreas]
-            || Svc.Condition[ConditionFlag.BetweenAreas51]
-            || Svc.Condition[ConditionFlag.Casting]
-            || Svc.Condition[ConditionFlag.MountOrOrnamentTransition]
-            || !Svc.Condition[ConditionFlag.InFlight]
-            || !Svc.PluginInterface.InstalledPlugins.Any(x => x.IsLoaded && x.InternalName == "vnavmesh")
-            || !S.VnavmeshIPC.IsReady())
-        {
-            return false;
-        }
-
-        var map = AgentMap.Instance();
-        if(map == null || map->FlagMarkerCount == 0)
-        {
-            return false;
-        }
-
-        var flag = map->FlagMapMarkers[0];
-        return flag.TerritoryId == Svc.ClientState.TerritoryType && flag.MapId == Svc.ClientState.MapId;
     }
 
     static void Help()

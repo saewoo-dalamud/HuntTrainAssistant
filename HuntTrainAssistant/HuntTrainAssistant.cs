@@ -26,8 +26,8 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
     public TaskManager TaskManager;
     public int LastInstance = 0;
     public HashSet<DawntrailARank> KilledARanks = [];
-    internal DateTime? LastConductorActivity;
-    internal (uint TerritoryId, Vector2 Position, DateTime ExpiresAt)? PendingAutoFlyLocation;
+    internal AutoFlightController AutoFlight;
+    internal ConductorStateManager ConductorState;
 
     public HuntTrainAssistant(IDalamudPluginInterface pi)
     {
@@ -35,6 +35,8 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         ECommonsMain.Init(pi, this, Module.DalamudReflector);
         EzConfig.Migrate<Config>();
         Config = EzConfig.Init<Config>();
+        AutoFlight = new();
+        ConductorState = new();
         LocalizationManager.Initialize();
         EzConfigGui.Init(new MainWindow());
         EzConfigGui.Window.RespectCloseHotkey = false;
@@ -53,10 +55,10 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         InternalLog.Error($"During handling IPC call, exception has occurred: \n{obj}");
 		}
 
-		private void ClientState_TerritoryChanged(uint e)
+    private void ClientState_TerritoryChanged(uint e)
     {
         LastInstance = 0;
-        PendingAutoFlyLocation = null;
+        AutoFlight.Reset();
         if(TeleportTo != null)
         {
             TaskManager.Abort();
@@ -68,18 +70,15 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
             PluginLog.Debug($"TeleportTo reset (2)");
             TeleportTo = null;
         }
-        if (P.Config.ClearConductorsOutsideHuntingTerritory && !Utils.IsInHuntingTerritory())
-        {
-            P.Config.Conductors.Clear();
-        }
+        ConductorState.HandleTerritoryChanged();
         KilledARanks.Clear();
         PluginLog.Debug($"Cleared killed A ranks list (cs_tt)");
     }
 
     private void Framework_Update(object framework)
     {
-        UpdatePendingAutoFly();
-        UpdateConductorInactivity();
+        AutoFlight.Update();
+        ConductorState.Update();
         if(P.Config.Debug)
         {
             if(EzThrottler.Throttle("InformDebug", 600000)) DuoLog.Warning("You are using debug mode in HuntTrainAssistant which will break functions of the plugin. Please disable debug mode once you don't need it.");
@@ -88,7 +87,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         {
             LastInstance = (int)UIState.Instance()->PublicInstance.InstanceId;
             //instance changed event
-            PendingAutoFlyLocation = null;
+            AutoFlight.Reset();
             KilledARanks.Clear();
             PluginLog.Debug($"Cleared killed A ranks list (inst.ch.)");
         }
@@ -169,104 +168,6 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         }
     }
 
-    internal void QueueAutoFlyLocation(uint territoryId, Vector2 position)
-    {
-        PendingAutoFlyLocation = territoryId == Svc.ClientState.TerritoryType
-            ? (territoryId, position, DateTime.UtcNow.AddMinutes(5))
-            : null;
-    }
-
-    private void UpdatePendingAutoFly()
-    {
-        if(!P.Config.AutoFlyToConductorLocation || P.Config.Conductors.Count == 0)
-        {
-            PendingAutoFlyLocation = null;
-            return;
-        }
-
-        if(PendingAutoFlyLocation is not { } request)
-        {
-            return;
-        }
-
-        if(DateTime.UtcNow >= request.ExpiresAt)
-        {
-            PendingAutoFlyLocation = null;
-            PluginLog.Debug("Discarded expired auto-fly request");
-            return;
-        }
-
-        if(!Player.Interactable
-            || !IsScreenReady()
-            || Svc.Condition[ConditionFlag.InCombat]
-            || Svc.Condition[ConditionFlag.BetweenAreas]
-            || Svc.Condition[ConditionFlag.BetweenAreas51]
-            || Svc.Condition[ConditionFlag.Casting]
-            || Svc.Condition[ConditionFlag.MountOrOrnamentTransition]
-            || Svc.ClientState.TerritoryType != request.TerritoryId
-            || !Svc.PluginInterface.InstalledPlugins.Any(x => x.IsLoaded && x.InternalName == "vnavmesh")
-            || !S.VnavmeshIPC.IsReady())
-        {
-            return;
-        }
-
-        if(!Svc.Condition[ConditionFlag.InFlight])
-        {
-            if(!P.Config.AutoMountForAutoFly)
-            {
-                return;
-            }
-            if(!Svc.Condition[ConditionFlag.Mounted])
-            {
-                TaskMount.MountIfCan();
-                return;
-            }
-            if(!Player.CanFly)
-            {
-                PendingAutoFlyLocation = null;
-                PluginLog.Warning("Unable to auto-fly in the current territory");
-                return;
-            }
-        }
-
-        if(!EzThrottler.Throttle("AutoFlyToConductorLocation", 500))
-        {
-            return;
-        }
-
-        var destination = S.VnavmeshIPC.PointOnFloor(new(request.Position.X, 1024, request.Position.Y), false, 5);
-        if(destination != null && S.VnavmeshIPC.PathfindAndMoveTo(destination.Value, true))
-        {
-            PendingAutoFlyLocation = null;
-            PluginLog.Information($"Requested vnavmesh auto-flight to {destination.Value}");
-        }
-    }
-
-    private void UpdateConductorInactivity()
-    {
-        if(P.Config.Conductors.Count == 0)
-        {
-            LastConductorActivity = null;
-            return;
-        }
-
-        LastConductorActivity ??= DateTime.UtcNow;
-        if(P.Config.ClearConductorsOutsideHuntingTerritory
-            || !P.Config.ClearInactiveConductors
-            || P.Config.ConductorInactivityTimeoutMinutes <= 0
-            || DateTime.UtcNow - LastConductorActivity.Value < TimeSpan.FromMinutes(P.Config.ConductorInactivityTimeoutMinutes)
-            || Svc.Condition[ConditionFlag.InCombat]
-            || Svc.Condition[ConditionFlag.BetweenAreas]
-            || Svc.Condition[ConditionFlag.BetweenAreas51])
-        {
-            return;
-        }
-
-        P.Config.Conductors.Clear();
-        LastConductorActivity = null;
-        PluginLog.Information($"Cleared conductors after {P.Config.ConductorInactivityTimeoutMinutes} minutes of inactivity");
-    }
-
     public string Name => "HuntTrainAssistant";
 
     public void Dispose()
@@ -288,7 +189,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         }
         else if (arguments.StartsWith("clear"))
         {
-            P.Config.Conductors.Clear();
+            ConductorState.Clear();
         }
         else
         {

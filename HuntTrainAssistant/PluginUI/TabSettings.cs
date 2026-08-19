@@ -77,38 +77,14 @@ public unsafe class TabSettings
 								ImGui.SameLine();
 								ImGui.SetNextItemWidth(200f);
 								ImGuiEx.Combo("##PreferredMount", ref P.Config.Mount, Mounts.Keys, names: Mounts);
-								ImGui.Checkbox(Loc.Get("Settings.AutoFlyAfterCombat"), ref P.Config.AutoFlyToConductorLocation);
-								ImGuiEx.PluginAvailabilityIndicator([new("vnavmesh")]);
-								if(P.Config.AutoFlyToConductorLocation)
-								{
-										ImGui.Indent();
-										ImGui.Checkbox(Loc.Get("Settings.AutoMountForFlight"), ref P.Config.AutoMountForAutoFly);
-										ImGui.Unindent();
-								}
+								PersonalSettingsUI.DrawAutoFlight();
 								ImGui.Checkbox(Loc.Get("Settings.AetheryteCompensation"), ref P.Config.DistanceCompensationHack);
 						})
 						.Section(Loc.Get("Settings.Sections.Conductors"))
 						.Widget(() =>
 						{
 								ImGui.Checkbox(Loc.Get("Settings.SuppressOthers"), ref P.Config.SuppressChatOtherPlayers);
-								var keepConductors = !P.Config.ClearConductorsOutsideHuntingTerritory;
-								if(ImGui.Checkbox(Loc.Get("Settings.KeepConductorsOutsideTerritory"), ref keepConductors))
-								{
-										P.Config.ClearConductorsOutsideHuntingTerritory = !keepConductors;
-								}
-								if(keepConductors)
-								{
-										ImGui.Indent();
-										ImGui.Checkbox(Loc.Get("Settings.ClearInactiveConductors"), ref P.Config.ClearInactiveConductors);
-										if(P.Config.ClearInactiveConductors)
-										{
-												ImGui.Indent();
-												ImGui.SetNextItemWidth(150f);
-												ImGui.SliderInt(Loc.Get("Settings.ConductorTimeoutMinutes"), ref P.Config.ConductorInactivityTimeoutMinutes, 5, 120);
-												ImGui.Unindent();
-										}
-										ImGui.Unindent();
-								}
+								PersonalSettingsUI.DrawConductorPersistence();
 						})
 						.Section(Loc.Get("Settings.Sections.PartyFinder"))
 						.Widget(() =>
