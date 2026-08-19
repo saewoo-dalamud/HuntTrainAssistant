@@ -27,6 +27,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
     public int LastInstance = 0;
     public HashSet<DawntrailARank> KilledARanks = [];
     internal DateTime? LastConductorActivity;
+    internal (uint TerritoryId, Vector2 Position, DateTime ExpiresAt)? PendingAutoFlyLocation;
 
     public HuntTrainAssistant(IDalamudPluginInterface pi)
     {
@@ -55,6 +56,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
 		private void ClientState_TerritoryChanged(uint e)
     {
         LastInstance = 0;
+        PendingAutoFlyLocation = null;
         if(TeleportTo != null)
         {
             TaskManager.Abort();
@@ -76,6 +78,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
 
     private void Framework_Update(object framework)
     {
+        UpdatePendingAutoFly();
         UpdateConductorInactivity();
         if(P.Config.Debug)
         {
@@ -85,6 +88,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         {
             LastInstance = (int)UIState.Instance()->PublicInstance.InstanceId;
             //instance changed event
+            PendingAutoFlyLocation = null;
             KilledARanks.Clear();
             PluginLog.Debug($"Cleared killed A ranks list (inst.ch.)");
         }
@@ -162,6 +166,79 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
                 PluginLog.Debug($"TeleportTo reset (1)");
                 TeleportTo = null;
             }
+        }
+    }
+
+    internal void QueueAutoFlyLocation(uint territoryId, Vector2 position)
+    {
+        PendingAutoFlyLocation = territoryId == Svc.ClientState.TerritoryType
+            ? (territoryId, position, DateTime.UtcNow.AddMinutes(5))
+            : null;
+    }
+
+    private void UpdatePendingAutoFly()
+    {
+        if(!P.Config.AutoFlyToConductorLocation || P.Config.Conductors.Count == 0)
+        {
+            PendingAutoFlyLocation = null;
+            return;
+        }
+
+        if(PendingAutoFlyLocation is not { } request)
+        {
+            return;
+        }
+
+        if(DateTime.UtcNow >= request.ExpiresAt)
+        {
+            PendingAutoFlyLocation = null;
+            PluginLog.Debug("Discarded expired auto-fly request");
+            return;
+        }
+
+        if(!Player.Interactable
+            || !IsScreenReady()
+            || Svc.Condition[ConditionFlag.InCombat]
+            || Svc.Condition[ConditionFlag.BetweenAreas]
+            || Svc.Condition[ConditionFlag.BetweenAreas51]
+            || Svc.Condition[ConditionFlag.Casting]
+            || Svc.Condition[ConditionFlag.MountOrOrnamentTransition]
+            || Svc.ClientState.TerritoryType != request.TerritoryId
+            || !Svc.PluginInterface.InstalledPlugins.Any(x => x.IsLoaded && x.InternalName == "vnavmesh")
+            || !S.VnavmeshIPC.IsReady())
+        {
+            return;
+        }
+
+        if(!Svc.Condition[ConditionFlag.InFlight])
+        {
+            if(!P.Config.AutoMountForAutoFly)
+            {
+                return;
+            }
+            if(!Svc.Condition[ConditionFlag.Mounted])
+            {
+                TaskMount.MountIfCan();
+                return;
+            }
+            if(!Player.CanFly)
+            {
+                PendingAutoFlyLocation = null;
+                PluginLog.Warning("Unable to auto-fly in the current territory");
+                return;
+            }
+        }
+
+        if(!EzThrottler.Throttle("AutoFlyToConductorLocation", 500))
+        {
+            return;
+        }
+
+        var destination = S.VnavmeshIPC.PointOnFloor(new(request.Position.X, 1024, request.Position.Y), false, 5);
+        if(destination != null && S.VnavmeshIPC.PathfindAndMoveTo(destination.Value, true))
+        {
+            PendingAutoFlyLocation = null;
+            PluginLog.Information($"Requested vnavmesh auto-flight to {destination.Value}");
         }
     }
 

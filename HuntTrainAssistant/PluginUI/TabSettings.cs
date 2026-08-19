@@ -60,6 +60,14 @@ public unsafe class TabSettings
 								ImGui.Indent();
 								ImGui.Checkbox(Loc.Get("Settings.NoDuplicateFlags"), ref P.Config.NoDuplicateFlags);
 								ImGui.Unindent();
+								ImGui.Checkbox(Loc.Get("Settings.AutoFlyAfterCombat"), ref P.Config.AutoFlyToConductorLocation);
+								if(P.Config.AutoFlyToConductorLocation)
+								{
+										ImGui.Indent();
+										ImGui.Checkbox(Loc.Get("Settings.AutoMountForFlight"), ref P.Config.AutoMountForAutoFly);
+										ImGuiEx.PluginAvailabilityIndicator([new("vnavmesh")]);
+										ImGui.Unindent();
+								}
 								ImGui.Checkbox(Loc.Get("Settings.SuppressOthers"), ref P.Config.SuppressChatOtherPlayers);
 								var keepConductors = !P.Config.ClearConductorsOutsideHuntingTerritory;
 								if(ImGui.Checkbox(Loc.Get("Settings.KeepConductorsOutsideTerritory"), ref keepConductors))

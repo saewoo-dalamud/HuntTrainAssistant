@@ -80,6 +80,10 @@ internal unsafe static class ChatMessageHandler
                                 var a = MapManager.GetNearestAetheryte(m);
                                 if(a != null) LastMessageLoc = ArrivalData.CreateOrNull(a, m.TerritoryType.RowId, 0);
                             }
+                            if(P.Config.AutoFlyToConductorLocation)
+                            {
+                                P.QueueAutoFlyLocation(m.TerritoryType.RowId, new(m.RawX / 1000f, m.RawY / 1000f));
+                            }
                         }
                     }
                     break;

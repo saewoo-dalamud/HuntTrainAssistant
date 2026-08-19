@@ -55,6 +55,8 @@
     "PreferredMount": "선호 탈것",
     "AutoOpenMap": "새 위치 링크를 받으면 지도 자동 열기",
     "NoDuplicateFlags": "이미 열었던 플래그는 다시 열지 않기",
+    "AutoFlyAfterCombat": "전투 종료 후 다음 마물 플래그로 자동 이동",
+    "AutoMountForFlight": "자동으로 마운트하고 이륙",
     "SuppressOthers": "지휘자 지정 시 다른 사람의 메시지 숨기기",
     "KeepConductorsOutsideTerritory": "마물 사냥 지역을 벗어나도 지휘자 목록 유지",
     "ClearInactiveConductors": "일정 시간 지휘자 메시지가 없으면 목록 초기화",

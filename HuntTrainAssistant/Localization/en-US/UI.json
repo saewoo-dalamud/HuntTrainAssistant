@@ -55,6 +55,8 @@
     "PreferredMount": "Preferred Mount",
     "AutoOpenMap": "Auto-open map when new location is linked",
     "NoDuplicateFlags": "Don't open flag that was previously open",
+    "AutoFlyAfterCombat": "Automatically move to the next hunt flag after combat",
+    "AutoMountForFlight": "Mount and take off automatically",
     "SuppressOthers": "When conductor is set, suppress other people's messages",
     "KeepConductorsOutsideTerritory": "Keep conductor list outside hunting territories",
     "ClearInactiveConductors": "Clear the list after no conductor messages for a while",

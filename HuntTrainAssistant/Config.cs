@@ -20,6 +20,8 @@ public class Config : IEzConfig
     public int ConductorInactivityTimeoutMinutes = 30;
     public bool Debug = false;
     public bool AutoOpenMap = true;
+    public bool AutoFlyToConductorLocation = false;
+    public bool AutoMountForAutoFly = true;
     public bool DistanceCompensationHack = false;
     public bool SonarIntegration = false;
     public bool HuntAlertsIntegration = false;
