@@ -26,6 +26,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
     public TaskManager TaskManager;
     public int LastInstance = 0;
     public HashSet<DawntrailARank> KilledARanks = [];
+    internal DateTime? LastConductorActivity;
 
     public HuntTrainAssistant(IDalamudPluginInterface pi)
     {
@@ -65,7 +66,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
             PluginLog.Debug($"TeleportTo reset (2)");
             TeleportTo = null;
         }
-        if (!Utils.IsInHuntingTerritory())
+        if (P.Config.ClearConductorsOutsideHuntingTerritory && !Utils.IsInHuntingTerritory())
         {
             P.Config.Conductors.Clear();
         }
@@ -75,6 +76,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
 
     private void Framework_Update(object framework)
     {
+        UpdateConductorInactivity();
         if(P.Config.Debug)
         {
             if(EzThrottler.Throttle("InformDebug", 600000)) DuoLog.Warning("You are using debug mode in HuntTrainAssistant which will break functions of the plugin. Please disable debug mode once you don't need it.");
@@ -161,6 +163,31 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
                 TeleportTo = null;
             }
         }
+    }
+
+    private void UpdateConductorInactivity()
+    {
+        if(P.Config.Conductors.Count == 0)
+        {
+            LastConductorActivity = null;
+            return;
+        }
+
+        LastConductorActivity ??= DateTime.UtcNow;
+        if(P.Config.ClearConductorsOutsideHuntingTerritory
+            || !P.Config.ClearInactiveConductors
+            || P.Config.ConductorInactivityTimeoutMinutes <= 0
+            || DateTime.UtcNow - LastConductorActivity.Value < TimeSpan.FromMinutes(P.Config.ConductorInactivityTimeoutMinutes)
+            || Svc.Condition[ConditionFlag.InCombat]
+            || Svc.Condition[ConditionFlag.BetweenAreas]
+            || Svc.Condition[ConditionFlag.BetweenAreas51])
+        {
+            return;
+        }
+
+        P.Config.Conductors.Clear();
+        LastConductorActivity = null;
+        PluginLog.Information($"Cleared conductors after {P.Config.ConductorInactivityTimeoutMinutes} minutes of inactivity");
     }
 
     public string Name => "HuntTrainAssistant";

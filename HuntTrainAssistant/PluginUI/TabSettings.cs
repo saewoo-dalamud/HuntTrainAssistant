@@ -61,6 +61,24 @@ public unsafe class TabSettings
 								ImGui.Checkbox(Loc.Get("Settings.NoDuplicateFlags"), ref P.Config.NoDuplicateFlags);
 								ImGui.Unindent();
 								ImGui.Checkbox(Loc.Get("Settings.SuppressOthers"), ref P.Config.SuppressChatOtherPlayers);
+								var keepConductors = !P.Config.ClearConductorsOutsideHuntingTerritory;
+								if(ImGui.Checkbox(Loc.Get("Settings.KeepConductorsOutsideTerritory"), ref keepConductors))
+								{
+										P.Config.ClearConductorsOutsideHuntingTerritory = !keepConductors;
+								}
+								if(keepConductors)
+								{
+										ImGui.Indent();
+										ImGui.Checkbox(Loc.Get("Settings.ClearInactiveConductors"), ref P.Config.ClearInactiveConductors);
+										if(P.Config.ClearInactiveConductors)
+										{
+												ImGui.Indent();
+												ImGui.SetNextItemWidth(150f);
+												ImGuiEx.SliderIntAsFloat(Loc.Get("Settings.ConductorTimeoutMinutes"), ref P.Config.ConductorInactivityTimeoutMinutes, 5, 120);
+												ImGui.Unindent();
+										}
+										ImGui.Unindent();
+								}
 								ImGui.Checkbox(Loc.Get("Settings.AetheryteCompensation"), ref P.Config.DistanceCompensationHack);
 								ImGui.Checkbox(Loc.Get("Settings.AutoNextInstance"), ref P.Config.AutoSwitchInstanceTwoRanks);
 								ImGui.Checkbox(Loc.Get("Settings.ContextMenu"), ref P.Config.ContextMenu);

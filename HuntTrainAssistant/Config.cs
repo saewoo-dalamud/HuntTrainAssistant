@@ -2,6 +2,7 @@
 using ECommons.ChatMethods;
 using ECommons.Configuration;
 using HuntTrainAssistant.DataStructures;
+using Newtonsoft.Json;
 
 namespace HuntTrainAssistant;
 
@@ -12,7 +13,11 @@ public class Config : IEzConfig
     public bool AutoTeleport = true;
     public float AutoTeleportAetheryteDistanceDiff = 3f;
     public bool SuppressChatOtherPlayers = true;
+    [JsonIgnore]
     public List<Sender> Conductors = [];
+    public bool ClearConductorsOutsideHuntingTerritory = true;
+    public bool ClearInactiveConductors = true;
+    public int ConductorInactivityTimeoutMinutes = 30;
     public bool Debug = false;
     public bool AutoOpenMap = true;
     public bool DistanceCompensationHack = false;

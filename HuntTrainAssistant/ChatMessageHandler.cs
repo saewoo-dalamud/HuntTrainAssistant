@@ -24,6 +24,10 @@ internal unsafe static class ChatMessageHandler
         {
             var isMapLink = false;
             var isConductorMessage = (P.Config.Debug && (cm.Sender.ToString().Contains(Svc.ClientState.LocalPlayer.Name.ToString()) || cm.LogKind == XivChatType.Echo)) || (TryDecodeSender(cm.Sender, out var s) && conductorNames.Contains(s.Name));
+            if(isConductorMessage)
+            {
+                P.LastConductorActivity = DateTime.UtcNow;
+            }
             //InternalLog.Debug($"Message: {message.ToString()} from {sender}, isConductor = {isConductorMessage}");
             foreach (var x in cm.Message.Payloads)
             {
