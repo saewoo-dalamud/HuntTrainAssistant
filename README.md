@@ -1,38 +1,30 @@
-﻿# HuntTrainAssistant
+# HuntTrainAssistant (saewoo's fork)
 A plugin that makes hunting in FFXIV less cumbersome.
-## Become a Supporter!
-If you like HuntTrainAssistant, please consider becoming a supporter on Patreon or via other means! This will help me to continue updating HuntTrainAssistant and work on new plugins and features and you will receive benefits such as early progress updates, priority support, prioritized feature requests, early testing builds and private tools. 
-- [Subscribe on Patreon (Starts from $1)](https://subscribe.nightmarexiv.org/) - eligible for Discord role
-- [Donate Litecoin, Bitcoin, Tether or other crypto](https://crypto.nightmarexiv.org/) - eligible for Discord role
-- [One-time donation on Ko-Fi](https://donate.nightmarexiv.org/)
 
-### Also:
-- [Explore other plugins I maintain or contributed to](https://explore.nightmarexiv.org/)
-- [Join NightmareXIV Discord server to receive fast support and pings about plugin updates](https://discord.gg/BeeRFKDJD3)
+> This is a personal fork of [NightmareXIV/HuntTrainAssistant](https://github.com/NightmareXIV/HuntTrainAssistant) with additional personal features. It is not affiliated with NightmareXIV and changes here are not submitted upstream. If you like the original plugin, please consider [supporting NightmareXIV](https://explore.nightmarexiv.org/).
+>
+> Currently based on upstream version [1.0.2.16](https://github.com/NightmareXIV/HuntTrainAssistant/releases/tag/1.0.2.16). See each [release](https://github.com/saewoo-dalamud/HuntTrainAssistant/releases) for the upstream version it was rebased on.
+
 ## Core features
 - Assign a conductor and have their messages highlighted and everyone else - temporarily muted;
 - Auto-open a map when conductor posts new link;
 - Conductor message notification: freely alt-tab during slow hunt train and receive tray notification once new link is posted;
 - Auto-teleport to next location or instance once all marks were killed. Teleport will be retried in case of congestion;
 - Integrates with Sonar, HuntAlerts and Lifestream to listen for new S-ranks and automatically queue world visit for them.
+
 ## This plugin is in development
-This means that there are still features that I would like to implement in future or features that I would like to enhance, as well as that I'm accepting suggestions and feature requests.
+This means that there are still features that I would like to implement in future or features that I would like to enhance.
+
 ## Installation
-1. Install [FFXIVQuickLauncher](https://github.com/goatcorp/FFXIVQuickLauncher?tab=readme-ov-file#xivlauncher-----) and enable Dalamud in it's settings. You have to run the game through FFXIVQuickLauncher in order for any of these plugins to work.
-2. Open Dalamud settings by typing `/xlsettings` in game chat.
-3. Go to "Experimental" tab.
-4. Find "Custom Plugin Repositories" section, agree with listed terms if needed and paste the following link into text input field: `https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/pluginmaster.json`
-5. Click "Save" button.
+1. Open Dalamud settings by typing `/xlsettings` in game chat.
+2. Go to "Experimental" tab.
+3. Find "Custom Plugin Repositories" section, agree with listed terms if needed and paste the following link into text input field: `https://raw.githubusercontent.com/saewoo-dalamud/MyDalamudPlugins/main/pluginmaster.json`
+4. Click "Save" button.
 
-You should now have NightmareXIV plugins available in your plugin installer. <br>
-Open plugin installer by typing `/xlplugins` in game chat, go to "Available plugins" section and search for a plugin you would like to install.
-
-![image](https://github.com/NightmareXIV/MyDalamudPlugins/blob/main/meta/install/installer.png?raw=true)
+You should now have this plugin available in your plugin installer. <br>
+Open plugin installer by typing `/xlplugins` in game chat, go to "Available plugins" section and search for "saewoo's HuntTrainAssistant".
 
 ## Support
-Join NightmareXIV Discord server to receive support for this plugin: https://discord.gg/m8NRt4X8Gf
-[![](https://dcbadge.vercel.app/api/server/m8NRt4X8Gf)](https://discord.gg/m8NRt4X8Gf)
+Please open an issue in [this repository](https://github.com/saewoo-dalamud/HuntTrainAssistant/issues) for bugs or suggestions related to this fork.
 
-The server operates on a ticket-based system. Please create a ticket and describe your issue.
-Additionally, you may create an issue in the repository. Reply time for tickets may be significantly longer than on Discord, however, the issue does not have any risks to be lost.
-(Basically, if you want to report a critical bug or receive help, prefer Discord, if you want to suggest feature or report non-critical bug, prefer Github)
+For general questions about the original plugin, you can also check the [NightmareXIV Discord server](https://discord.gg/m8NRt4X8Gf), but keep in mind this fork's code and features may differ from upstream.
