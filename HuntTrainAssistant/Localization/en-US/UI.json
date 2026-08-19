@@ -1,0 +1,105 @@
+{
+  "Common": {
+    "Cancel": "Cancel",
+    "Clear": "Clear",
+    "NotSet": "Not set",
+    "Search": "Search",
+    "Select": "Select...",
+    "Stop": "Stop"
+  },
+  "SettingsWindow": {
+    "Title": "HuntTrainAssistant Configuration",
+    "Tabs": {
+      "Settings": "Settings",
+      "Integrations": "Integrations",
+      "AetheryteBlacklist": "Aetheryte Blacklist",
+      "Debug": "Debug",
+      "Log": "Log"
+    }
+  },
+  "MainWindow": {
+    "OpenSettings": "Open settings window",
+    "CreatePartyFinder": "Create hunting party finder",
+    "CurrentConductors": "Current conductors:",
+    "RemoveSelected": "Remove selected",
+    "AddConductor": "Add conductor:",
+    "AutoTeleportInactive": "Autoteleport: inactive",
+    "AutoTeleportTo": "Autoteleport to {0}",
+    "AutoTeleportActive": "Autoteleport active.",
+    "TasksProcessing": "{0:D2} tasks processing",
+    "TaskManagerInactive": "Task manager: inactive",
+    "SonarAutoTeleport": "Sonar Auto-teleport",
+    "TeleportEnabledOutsideHuntZone": "You are not in a hunting zone. Teleport enabled.",
+    "TeleportDisabledInsideHuntZone": "You are in a hunting zone. Teleport disabled.",
+    "WaitingToArrive": "Waiting to arrive at: {0}/{1} i{2}",
+    "Help": {
+      "HuntZone": "- Be in one of Endwalker hunt zones;",
+      "AssignConductors": "- Assign conductors either by right-clicking them in chat/world or enter their names manually;"
+    }
+  },
+  "Settings": {
+    "Language": "Language",
+    "WaitingForFile": "Waiting for file selection...",
+    "MountRoulette": "Mount roulette",
+    "Sections": {
+      "General": "General settings",
+      "Notifications": "Notifications",
+      "Triggers": "Triggers"
+    },
+    "PluginEnabled": "Plugin enabled",
+    "DebugMode": "Debug mode",
+    "AutoTeleportDifferentZone": "Autoteleport to different zone",
+    "AutoSwitchInstanceOne": "Auto-switch to instance 1 after teleporting",
+    "MountAfterTeleport": "Mount up after arriving to your teleport destination",
+    "PreferredMount": "Preferred Mount",
+    "AutoOpenMap": "Auto-open map when new location is linked",
+    "NoDuplicateFlags": "Don't open flag that was previously open",
+    "SuppressOthers": "When conductor is set, suppress other people's messages",
+    "AetheryteCompensation": "Compensate for some aetherytes' position",
+    "AutoNextInstance": "Auto-teleport to next instance if two A-marks killed",
+    "ContextMenu": "Context menu integration",
+    "EnablePartyFinderButton": "Enable one-click party finder creation button",
+    "PartyFinderComment": "Party finder comment",
+    "RandomTeleportDelay": "Enable random auto-teleport delay",
+    "MinimumDelay": "Minimum delay",
+    "MaximumDelay": "Maximum delay",
+    "NotificationMasterRequired": "NotificationMaster plugin required",
+    "PlayConductorAudio": "Play audio when conductor posts message",
+    "AudioFilePath": "Path to audio file",
+    "Volume": "Volume",
+    "AudioOnlyMinimized": "Play only when game is not minimized",
+    "AudioMinimumInterval": "Minimal interval between audio notifications",
+    "FlashTaskbar": "Flash taskbar on conductor message",
+    "TrayNotification": "Show tray popup notification on conductor message",
+    "ExecuteMacroOnFlag": "Execute macro after receiving conductor's message with flag",
+    "SelectSystemMacro": "Select System Macro"
+  },
+  "AetheryteBlacklist": {
+    "Description": "These aetherytes will always be ignored",
+    "OnlySelected": "Only selected"
+  },
+  "Integrations": {
+    "Sections": {
+      "Plugins": "Plugins",
+      "CommonSettings": "Common Settings",
+      "TriggerFilters": "Trigger Filters"
+    },
+    "EnableSonar": "Enable Sonar integration",
+    "SonarDescription": "When a hunt mark is announced in chat, automatically teleport to the target world and zone",
+    "AddTeleportLink": "Add click to teleport link into chat message",
+    "ChangeInstance": "Change instance after teleporting",
+    "EnableHuntAlerts": "Enable HuntAlerts integration",
+    "HuntAlertsDescription": "When a hunt mark notification is received from server, automatically teleport to the target world and zone",
+    "CommonDescription": "These options are common for all integrations",
+    "TeleportNearestAetheryte": "Teleport to nearest aetheryte upon receiving announcement",
+    "AllowCrossWorld": "Allow cross-world teleports",
+    "AllowCrossDatacenter": "Allow cross-datacenter teleports",
+    "BlacklistWorlds": "Blacklist Worlds ({0} currently blacklisted)",
+    "WorldBlacklistDescription": "Auto-teleport will not be engaged to the worlds selected below. You can still use chat link to get to them manually.",
+    "Region": "Region",
+    "DataCenter": "Data Center"
+  },
+  "Messages": {
+    "PartyFinderDisabled": "Create party finder button is not enabled. Open settings to enable it."
+  }
+}

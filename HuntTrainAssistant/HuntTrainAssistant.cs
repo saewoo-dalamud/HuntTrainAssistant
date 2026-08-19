@@ -33,6 +33,7 @@ public unsafe class HuntTrainAssistant : IDalamudPlugin
         ECommonsMain.Init(pi, this, Module.DalamudReflector);
         EzConfig.Migrate<Config>();
         Config = EzConfig.Init<Config>();
+        LocalizationManager.Initialize();
         EzConfigGui.Init(new MainWindow());
         EzConfigGui.Window.RespectCloseHotkey = false;
         EzCmd.Add("/hta", OnChatCommand, "toggle plugin interface\n/hta clear: clear current conductors\n/hta <player name>: add new conductor");

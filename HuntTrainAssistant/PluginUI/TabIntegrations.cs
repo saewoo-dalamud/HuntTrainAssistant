@@ -14,40 +14,40 @@ public class TabIntegrations
     public void Draw()
     {
         new NuiBuilder()
-        .Section("Plugins")
+        .Section(Loc.Get("Integrations.Sections.Plugins"))
         .Widget(() =>
         {
-            ImGui.Checkbox("Enable Sonar integration", ref P.Config.SonarIntegration);
+            ImGui.Checkbox(Loc.Get("Integrations.EnableSonar"), ref P.Config.SonarIntegration);
             ImGuiEx.PluginAvailabilityIndicator([new("SonarPlugin", "Sonar")]);
             ImGui.Indent();
-            ImGuiEx.TextWrapped("When a hunt mark announced in chat, automatically teleport to the target world and zone");
-            ImGui.Checkbox("Add click to teleport link into chat message", ref P.Config.AutoVisitModifyChat);
-            ImGui.Checkbox("Change instance after teleporting", ref P.Config.EnableSonarInstanceSwitching);
+            ImGuiEx.TextWrapped(Loc.Get("Integrations.SonarDescription"));
+            ImGui.Checkbox(Loc.Get("Integrations.AddTeleportLink"), ref P.Config.AutoVisitModifyChat);
+            ImGui.Checkbox(Loc.Get("Integrations.ChangeInstance"), ref P.Config.EnableSonarInstanceSwitching);
             ImGui.Unindent();
             ImGui.Separator();
-            ImGui.Checkbox("Enable HuntAlerts integration", ref P.Config.HuntAlertsIntegration);
+            ImGui.Checkbox(Loc.Get("Integrations.EnableHuntAlerts"), ref P.Config.HuntAlertsIntegration);
             ImGuiEx.PluginAvailabilityIndicator([new("HuntAlerts", new Version("1.2.1.3"))]);
-            ImGuiEx.TextWrapped("When a hunt mark notification is received from server, automatically teleport to the target world and zone");
+            ImGuiEx.TextWrapped(Loc.Get("Integrations.HuntAlertsDescription"));
         })
 
-        .Section("Common Settings")
+        .Section(Loc.Get("Integrations.Sections.CommonSettings"))
         .Widget(() =>
         {
-            ImGuiEx.TextWrapped($"These options are common for all integrations");
+            ImGuiEx.TextWrapped(Loc.Get("Integrations.CommonDescription"));
             ImGui.Separator();
-            ImGui.Checkbox($"Teleport to nearest aetheryte upon receiving announcement", ref P.Config.AutoVisitTeleportEnabled);
+            ImGui.Checkbox(Loc.Get("Integrations.TeleportNearestAetheryte"), ref P.Config.AutoVisitTeleportEnabled);
             ImGuiEx.PluginAvailabilityIndicator([new("TeleporterPlugin", "Teleporter")]);
             ImGuiEx.PluginAvailabilityIndicator([new("Lifestream")]);
-            ImGui.Checkbox("Allow cross-world teleports", ref P.Config.AutoVisitCrossWorld);
+            ImGui.Checkbox(Loc.Get("Integrations.AllowCrossWorld"), ref P.Config.AutoVisitCrossWorld);
             ImGuiEx.PluginAvailabilityIndicator([new("TeleporterPlugin", "Teleporter"), new("Lifestream")]);
             ImGuiEx.PluginAvailabilityIndicator([new("Lifestream")]);
-            ImGui.Checkbox("Allow cross-datacenter teleports", ref P.Config.AutoVisitCrossDC);
+            ImGui.Checkbox(Loc.Get("Integrations.AllowCrossDatacenter"), ref P.Config.AutoVisitCrossDC);
             ImGuiEx.PluginAvailabilityIndicator([new("TeleporterPlugin", "Teleporter"), new("Lifestream")]);
             ImGuiEx.PluginAvailabilityIndicator([new("Lifestream")]);
-            ImGuiEx.TreeNodeCollapsingHeader($"Blacklist Worlds ({P.Config.WorldBlacklist.Count} currently blacklisted)###blworlds", DrawWorldBlacklist);
+            ImGuiEx.TreeNodeCollapsingHeader($"{Loc.Get("Integrations.BlacklistWorlds", P.Config.WorldBlacklist.Count)}###blworlds", DrawWorldBlacklist);
         })
 
-        .Section("Trigger Filters")
+        .Section(Loc.Get("Integrations.Sections.TriggerFilters"))
         .Widget(() =>
         {
             foreach(var rank in Enum.GetValues<Rank>())
@@ -76,14 +76,14 @@ public class TabIntegrations
 
     void DrawWorldBlacklist()
     {
-        ImGuiEx.TextWrapped($"Auto-teleport will not be engaged to the worlds selected below. You can still use chat link to get to them manually.");
+        ImGuiEx.TextWrapped(Loc.Get("Integrations.WorldBlacklistDescription"));
         foreach(var r in Enum.GetValues<ExcelWorldHelper.Region>())
         {
-            ImGuiEx.CollectionCheckbox($"Region {r}", ExcelWorldHelper.GetPublicWorlds(r).Select(x => x.RowId), P.Config.WorldBlacklist);
+            ImGuiEx.CollectionCheckbox($"{Loc.Get("Integrations.Region")} {r}", ExcelWorldHelper.GetPublicWorlds(r).Select(x => x.RowId), P.Config.WorldBlacklist);
             ImGui.Indent();
             foreach(var dc in ExcelWorldHelper.GetDataCenters(r))
             {
-                ImGuiEx.CollectionCheckbox($"{dc.Name} Data Center", ExcelWorldHelper.GetPublicWorlds(dc.RowId).Select(x => x.RowId), P.Config.WorldBlacklist);
+                ImGuiEx.CollectionCheckbox($"{dc.Name} {Loc.Get("Integrations.DataCenter")}", ExcelWorldHelper.GetPublicWorlds(dc.RowId).Select(x => x.RowId), P.Config.WorldBlacklist);
                 ImGui.Indent();
                 foreach(var w in ExcelWorldHelper.GetPublicWorlds(dc.RowId))
                 {

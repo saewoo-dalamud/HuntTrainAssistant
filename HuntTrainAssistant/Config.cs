@@ -7,6 +7,7 @@ namespace HuntTrainAssistant;
 
 public class Config : IEzConfig
 {
+    public string Language = LocalizationManager.BaseLanguage;
     public bool Enabled = true;
     public bool AutoTeleport = true;
     public float AutoTeleportAetheryteDistanceDiff = 3f;

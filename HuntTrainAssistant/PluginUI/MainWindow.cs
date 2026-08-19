@@ -16,14 +16,14 @@ public unsafe class MainWindow : ConfigWindow
 						Click = (m) => { if (m == ImGuiMouseButton.Left) S.SettingsWindow.IsOpen = true; },
 						Icon = FontAwesomeIcon.Cog,
 						IconOffset = new(2, 2),
-						ShowTooltip = () => ImGui.SetTooltip("Open settings window"),
+						ShowTooltip = () => ImGui.SetTooltip(Loc.Get("MainWindow.OpenSettings")),
 				});
         TitleBarButtons.Add(new()
         {
-            Click = (m) => { if(P.Config.PfinderEnable) { TaskCreateHuntPF.Enqueue(); } else { DuoLog.Warning($"Create party finder button is not enabled. Open settings to enable it."); } },
+            Click = (m) => { if(P.Config.PfinderEnable) { TaskCreateHuntPF.Enqueue(); } else { DuoLog.Warning(Loc.Get("Messages.PartyFinderDisabled")); } },
             Icon = FontAwesomeIcon.PeopleGroup,
             IconOffset = new(2, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Create hunting party finder"),
+            ShowTooltip = () => ImGui.SetTooltip(Loc.Get("MainWindow.CreatePartyFinder")),
         });
 		}
 
@@ -34,15 +34,15 @@ public unsafe class MainWindow : ConfigWindow
 						ImGui.SetNextItemWidth(150f);
 						var condIndex = 0;
 						var condNames = P.Config.Conductors.Select(x => x.Name).ToArray();
-						ImGuiEx.Text("Current conductors:");
+						ImGuiEx.Text(Loc.Get("MainWindow.CurrentConductors"));
 						ImGui.SameLine();
-						if(ImGui.SmallButton("Clear"))
+						if(ImGui.SmallButton(Loc.Get("Common.Clear")))
 						{
 								P.Config.Conductors.Clear();
 						}
 						ImGui.SameLine();
 						// Remove selected conductor
-						if(ImGui.SmallButton("Remove selected"))
+						if(ImGui.SmallButton(Loc.Get("MainWindow.RemoveSelected")))
 						{
 								if(condIndex >= 0 && condIndex < P.Config.Conductors.Count)
 								{
@@ -51,7 +51,7 @@ public unsafe class MainWindow : ConfigWindow
 						}
 						ImGuiEx.SetNextItemFullWidth();
 						ImGui.ListBox("##conds", ref condIndex, condNames, Math.Clamp(condNames.Length, 1, 3));
-						ImGuiEx.Text("Add conductor:");
+						ImGuiEx.Text(Loc.Get("MainWindow.AddConductor"));
 						ImGui.SameLine();
 						ImGui.SetNextItemWidth(150f);
 						var newCond = "";
@@ -65,17 +65,17 @@ public unsafe class MainWindow : ConfigWindow
 						}
 						if(P.TeleportTo == null)
 						{
-								ImGuiEx.Text(ImGuiColors.DalamudGrey3, "Autoteleport: inactive");
-								if(ChatMessageHandler.LastMessageLoc != null && ImGui.Button($"Autoteleport to {ChatMessageHandler.LastMessageLoc.Aetheryte.PlaceName.Value.Name}"))
+								ImGuiEx.Text(ImGuiColors.DalamudGrey3, Loc.Get("MainWindow.AutoTeleportInactive"));
+								if(ChatMessageHandler.LastMessageLoc != null && ImGui.Button(Loc.Get("MainWindow.AutoTeleportTo", ChatMessageHandler.LastMessageLoc.Aetheryte.PlaceName.Value.Name)))
 								{
 										P.TeleportTo = ChatMessageHandler.LastMessageLoc;
 								}
 						}
 						else
 						{
-								ImGuiEx.Text($"Autoteleport active.");
+								ImGuiEx.Text(Loc.Get("MainWindow.AutoTeleportActive"));
 								ImGui.SameLine();
-								if(ImGui.SmallButton("Cancel"))
+								if(ImGui.SmallButton(Loc.Get("Common.Cancel")))
 								{
 										PluginLog.Debug($"TeleportTo reset (3)");
 										P.TeleportTo = null;
@@ -84,27 +84,27 @@ public unsafe class MainWindow : ConfigWindow
 						}
 						if(P.TaskManager.IsBusy)
 						{
-								ImGuiEx.Text($"{P.TaskManager.NumQueuedTasks:D2} tasks processing");
+								ImGuiEx.Text(Loc.Get("MainWindow.TasksProcessing", P.TaskManager.NumQueuedTasks));
 								ImGui.SameLine();
-								if(ImGui.SmallButton("Stop##tm"))
+								if(ImGui.SmallButton($"{Loc.Get("Common.Stop")}##tm"))
 								{
 										P.TaskManager.Abort();
 								}
 						}
 						else
 						{
-								ImGuiEx.Text(ImGuiColors.DalamudGrey3, $"Task manager: inactive");
+								ImGuiEx.Text(ImGuiColors.DalamudGrey3, Loc.Get("MainWindow.TaskManagerInactive"));
 						}
-						ImGui.Checkbox($"Sonar Auto-teleport", ref P.Config.AutoVisitTeleportEnabled);
+						ImGui.Checkbox(Loc.Get("MainWindow.SonarAutoTeleport"), ref P.Config.AutoVisitTeleportEnabled);
 						if(P.Config.AutoVisitTeleportEnabled)
 						{
 								if(!Utils.IsInHuntingTerritory())
 								{
-										ImGuiEx.HelpMarker("You are not in a hunting zone. Teleport enabled.", EColor.GreenBright, FontAwesomeIcon.Check.ToIconString());
+										ImGuiEx.HelpMarker(Loc.Get("MainWindow.TeleportEnabledOutsideHuntZone"), EColor.GreenBright, FontAwesomeIcon.Check.ToIconString());
 								}
 								else
 								{
-										ImGuiEx.HelpMarker("You are in a hunting zone. Teleport disabled. ", EColor.RedBright, "\uf00d");
+										ImGuiEx.HelpMarker(Loc.Get("MainWindow.TeleportDisabledInsideHuntZone"), EColor.RedBright, "\uf00d");
 								}
 								ImGui.SameLine();
 								ImGui.Checkbox("C/W", ref P.Config.AutoVisitCrossWorld);
@@ -113,8 +113,8 @@ public unsafe class MainWindow : ConfigWindow
 						}
 						if(S.SonarMonitor.Continuation != null)
 						{
-								ImGuiEx.Text(GradientColor.Get(EColor.RedBright, EColor.YellowBright), $"Waiting to arrive at: {S.SonarMonitor.Continuation.World}/{S.SonarMonitor.Continuation.Aetheryte.GetPlaceName()} i{S.SonarMonitor.Continuation.Instance}");
-								if(ImGui.SmallButton("Cancel##arrival"))
+								ImGuiEx.Text(GradientColor.Get(EColor.RedBright, EColor.YellowBright), Loc.Get("MainWindow.WaitingToArrive", S.SonarMonitor.Continuation.World, S.SonarMonitor.Continuation.Aetheryte.GetPlaceName(), S.SonarMonitor.Continuation.Instance));
+								if(ImGui.SmallButton($"{Loc.Get("Common.Cancel")}##arrival"))
 								{
 										S.SonarMonitor.Continuation = null;
 								}
@@ -128,7 +128,7 @@ public unsafe class MainWindow : ConfigWindow
 
     static void Help()
     {
-        ImGuiEx.TextWrapped("- Be in one of Endwalker hunt zones;");
-        ImGuiEx.TextWrapped("- Assign conductors either by right-clicking them in chat/world or enter their names manually;");
+        ImGuiEx.TextWrapped(Loc.Get("MainWindow.Help.HuntZone"));
+        ImGuiEx.TextWrapped(Loc.Get("MainWindow.Help.AssignConductors"));
     }
 }
