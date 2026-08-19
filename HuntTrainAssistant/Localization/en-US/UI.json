@@ -44,6 +44,9 @@
     "MountRoulette": "Mount roulette",
     "Sections": {
       "General": "General settings",
+      "Movement": "Teleport and movement",
+      "Conductors": "Conductors",
+      "PartyFinder": "Party finder",
       "Notifications": "Notifications",
       "Triggers": "Triggers"
     },

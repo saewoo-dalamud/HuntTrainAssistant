@@ -44,6 +44,9 @@
     "MountRoulette": "무작위 탈것",
     "Sections": {
       "General": "일반 설정",
+      "Movement": "텔레포 및 이동",
+      "Conductors": "지휘자",
+      "PartyFinder": "파티 모집",
       "Notifications": "알림",
       "Triggers": "트리거"
     },
